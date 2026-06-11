@@ -1,0 +1,160 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { profile } from "../data/profile";
+import { withBase } from "../lib/paths";
+
+const posts = (await getCollection("posts"))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+const featured = posts.filter((post) => post.data.featured).slice(0, 3);
+const works = posts.slice(0, 6);
+---
+
+<BaseLayout title={`${profile.name} | ${profile.title}`} description={profile.intro}>
+  <section class="hero home-hero">
+    <div class="hero-copy">
+      <p class="eyebrow">{profile.title}</p>
+      <h1>{profile.name}</h1>
+      <p class="lead">{profile.intro}</p>
+      <div class="hero-actions">
+        <a class="button primary" href="#featured-works">代表実績</a>
+        <a class="button ghost" href="#works">実績一覧</a>
+        {profile.links.map((link) => (
+          <a class="button ghost" href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="featured-works">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Featured</p>
+        <h2>代表実績</h2>
+      </div>
+      <a class="text-link" href={withBase("/posts/")}>一覧を見る</a>
+    </div>
+    <div class="feature-grid">
+      {featured.map((post) => (
+        <article class="feature-card">
+          <div class="feature-top">
+            <span class="pill neutral">{post.data.scope}</span>
+            <span class="feature-period">{post.data.period}</span>
+          </div>
+          <h3><a href={withBase(`/posts/${post.slug}/`)}>{post.data.title}</a></h3>
+          <p>{post.data.summary}</p>
+          <dl class="feature-meta">
+            <div>
+              <dt>Role</dt>
+              <dd>{post.data.role}</dd>
+            </div>
+            <div>
+              <dt>Outcome</dt>
+              <dd>{post.data.outcome}</dd>
+            </div>
+            <div>
+              <dt>Stack</dt>
+              <dd>{post.data.stack.join(" / ")}</dd>
+            </div>
+          </dl>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="panel" id="works">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Works</p>
+        <h2>実績一覧</h2>
+      </div>
+      <a class="text-link" href={withBase("/posts/")}>すべて見る</a>
+    </div>
+    <div class="works-grid">
+      {works.map((post) => (
+        <a class="work-card" href={withBase(`/posts/${post.slug}/`)}>
+          <div class="work-top">
+            <span class="pill neutral">{post.data.scope}</span>
+            <span class="feature-period">{post.data.period}</span>
+          </div>
+          <h3>{post.data.title}</h3>
+          <p>{post.data.summary}</p>
+          <p class="work-role">{post.data.role}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <style>
+    .home-hero,
+    .feature-grid,
+    .feature-meta,
+    .works-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero-copy,
+    .feature-card,
+    .work-card {
+      display: grid;
+      gap: 12px;
+    }
+
+    .feature-grid,
+    .works-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .feature-card,
+    .work-card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.56);
+      transition: transform 180ms ease, border-color 180ms ease;
+    }
+
+    .feature-card:hover,
+    .work-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(158, 67, 33, 0.34);
+    }
+
+    .feature-top,
+    .work-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .feature-meta {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .feature-meta div {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+
+    .feature-meta dt,
+    .feature-period,
+    .work-role {
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .feature-meta dd {
+      margin: 0;
+    }
+
+    @media (max-width: 900px) {
+      .feature-grid,
+      .works-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</BaseLayout>

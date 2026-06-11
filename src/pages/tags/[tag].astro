@@ -1,0 +1,72 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { withBase } from "../../lib/paths";
+
+const kinds = {
+  intern: "Internship",
+  lab: "Lab",
+  project: "Project",
+  writing: "Writing"
+} as const;
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts");
+  const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+
+  return tags.map((tag) => ({ params: { tag } }));
+}
+
+const { tag } = Astro.params;
+const posts = (await getCollection("posts"))
+  .filter((post) => post.data.tags.includes(tag || ""))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+---
+
+<BaseLayout title={`#${tag} | Portfolio`} description={`#${tag} の関連実績一覧です。`}>
+  <section class="page-intro">
+    <div>
+      <a class="text-link" href={withBase("/posts/")}>← 実績一覧へ戻る</a>
+      <p class="eyebrow">Tag</p>
+      <h1>#{tag}</h1>
+      <p class="lead">関連する実績だけをまとめています。</p>
+    </div>
+    <div class="intro-aside">
+      <p class="stat-label">Matches</p>
+      <p class="stat-value">{posts.length}</p>
+    </div>
+  </section>
+
+  <section class="work-ledger">
+    {posts.map((post) => (
+      <a class="ledger-row" href={withBase(`/posts/${post.slug}/`)}>
+        <div class="ledger-row-main">
+          <div class="meta-row">
+            <span class={`pill kind-${post.data.kind}`}>{kinds[post.data.kind]}</span>
+            <span>{post.data.period}</span>
+          </div>
+          <h2>{post.data.title}</h2>
+          <p>{post.data.summary}</p>
+        </div>
+        <dl class="ledger-meta">
+          <div>
+            <dt>Role</dt>
+            <dd>{post.data.role}</dd>
+          </div>
+          <div>
+            <dt>Scope</dt>
+            <dd>{post.data.scope}</dd>
+          </div>
+          <div>
+            <dt>Outcome</dt>
+            <dd>{post.data.outcome}</dd>
+          </div>
+          <div>
+            <dt>Stack</dt>
+            <dd>{post.data.stack.join(" / ")}</dd>
+          </div>
+        </dl>
+      </a>
+    ))}
+  </section>
+</BaseLayout>

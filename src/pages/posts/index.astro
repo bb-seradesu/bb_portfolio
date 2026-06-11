@@ -1,0 +1,183 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { withBase } from "../../lib/paths";
+
+const posts = (await getCollection("posts"))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
+const kinds = {
+  intern: "Internship",
+  lab: "Lab",
+  project: "Project",
+  writing: "Writing"
+} as const;
+const featured = posts.filter((post) => post.data.featured).slice(0, 3);
+const kindSummary = Object.entries(kinds)
+  .map(([key, label]) => ({
+    label,
+    count: posts.filter((post) => post.data.kind === key).length
+  }))
+  .filter((item) => item.count > 0);
+const stackCount = new Set(posts.flatMap((post) => post.data.stack)).size;
+---
+
+<BaseLayout title="Works | Portfolio" description="実績一覧です。">
+  <section class="page-intro">
+    <div>
+      <p class="eyebrow">Works</p>
+      <h1>実績一覧</h1>
+      <p class="lead">インターン、研究室、個人開発で公開できる実績をまとめています。</p>
+    </div>
+    <div class="intro-aside">
+      <p class="stat-label">Records</p>
+      <p class="stat-value">{posts.length}</p>
+      <p class="stat-copy">{kindSummary.length} categories / {stackCount} stacks</p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Filter</p>
+        <h2>タグで絞り込む</h2>
+      </div>
+    </div>
+    <div class="filter-row">
+      <button class="filter-button active" data-filter="all">All Works</button>
+      {tags.map((tag) => (
+        <button class="filter-button" data-filter={tag}>#{tag}</button>
+      ))}
+    </div>
+  </section>
+
+  <section class="comparison-board">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Featured</p>
+        <h2>代表実績</h2>
+      </div>
+    </div>
+    <div class="ledger-grid">
+      {featured.map((post) => (
+        <a class="ledger-card" href={withBase(`/posts/${post.slug}/`)}>
+          <p class="card-kicker">{post.data.scope}</p>
+          <h3>{post.data.title}</h3>
+          <p>{post.data.summary}</p>
+          <dl class="ledger-meta">
+            <div>
+              <dt>Role</dt>
+              <dd>{post.data.role}</dd>
+            </div>
+            <div>
+              <dt>Outcome</dt>
+              <dd>{post.data.outcome}</dd>
+            </div>
+          </dl>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="work-ledger" id="post-list">
+    {posts.map((post, index) => (
+      <article class="ledger-row case-row" data-tags={post.data.tags.join(" ")}>
+        <div class="ledger-row-main">
+          <div class="meta-row">
+            <span class={`pill kind-${post.data.kind}`}>{kinds[post.data.kind]}</span>
+            <time datetime={post.data.publishedAt.toISOString()}>
+              {post.data.publishedAt.toLocaleDateString("ja-JP")}
+            </time>
+          </div>
+          <h2>
+            <a href={withBase(`/posts/${post.slug}/`)}>{String(index + 1).padStart(2, "0")}. {post.data.title}</a>
+          </h2>
+          <p>{post.data.summary}</p>
+          <div class="tag-row">
+            {post.data.tags.map((tag) => (
+              <a class="pill neutral" href={withBase(`/tags/${tag}/`)}>#{tag}</a>
+            ))}
+          </div>
+        </div>
+        <dl class="case-matrix">
+          <div>
+            <dt>Role</dt>
+            <dd>{post.data.role}</dd>
+          </div>
+          <div>
+            <dt>Scope</dt>
+            <dd>{post.data.scope}</dd>
+          </div>
+          <div>
+            <dt>Period</dt>
+            <dd>{post.data.period}</dd>
+          </div>
+          <div>
+            <dt>Outcome</dt>
+            <dd>{post.data.outcome}</dd>
+          </div>
+          <div>
+            <dt>Stack</dt>
+            <dd>{post.data.stack.join(" / ")}</dd>
+          </div>
+        </dl>
+      </article>
+    ))}
+  </section>
+
+  <script>
+    const buttons = Array.from(
+      document.querySelectorAll<HTMLButtonElement>(".filter-button")
+    );
+    const cards = Array.from(
+      document.querySelectorAll<HTMLElement>(".case-row")
+    );
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = button.dataset.filter;
+        buttons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+
+        cards.forEach((card) => {
+          const tags = card.getAttribute("data-tags") || "";
+          const visible = filter === "all" || tags.split(" ").includes(filter || "");
+          card.toggleAttribute("hidden", !visible);
+        });
+      });
+    });
+  </script>
+
+  <style>
+    .case-matrix {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .case-matrix dt {
+      color: var(--muted);
+      font-size: 0.84rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .case-matrix div {
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .case-matrix dd {
+      margin: 0;
+      line-height: 1.65;
+    }
+
+    @media (max-width: 820px) {
+      .case-matrix {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</BaseLayout>
