@@ -7,17 +7,28 @@ import { withBase } from "../lib/paths";
 const posts = (await getCollection("posts"))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 const featured = posts.filter((post) => post.data.featured).slice(0, 3);
-const works = posts.slice(0, 6);
+const articleLikeSlugs = new Set(
+  posts
+    .filter((post) =>
+      post.data.kind === "writing" ||
+      post.data.tags.includes("writing") ||
+      post.data.tags.includes("documentation") ||
+      post.data.tags.includes("communication")
+    )
+    .map((post) => post.slug)
+);
+const activityPosts = posts.filter((post) => !articleLikeSlugs.has(post.slug)).slice(0, 4);
+const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).slice(0, 4);
 ---
 
 <BaseLayout title={`${profile.name} | ${profile.title}`} description={profile.intro}>
   <section class="hero home-hero">
-    <div class="hero-copy">
+    <div class="hero-title">
       <p class="eyebrow">{profile.title}</p>
       <h1>{profile.name}</h1>
       <p class="lead">{profile.intro}</p>
       <div class="hero-actions">
-        <a class="button primary" href="#featured-works">代表実績</a>
+        <a class="button primary" href="#latest-posts">新着記事</a>
         <a class="button ghost" href="#works">実績一覧</a>
         {profile.links.map((link) => (
           <a class="button ghost" href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
@@ -26,117 +37,238 @@ const works = posts.slice(0, 6);
     </div>
   </section>
 
-  <section class="panel" id="featured-works">
-    <div class="section-heading">
+  <section class="latest-strip" id="latest-posts">
+    <div class="strip-head">
       <div>
-        <p class="eyebrow">Featured</p>
-        <h2>代表実績</h2>
+        <p class="eyebrow">最近追加</p>
+        <h2>新着記事</h2>
       </div>
       <a class="text-link" href={withBase("/posts/")}>一覧を見る</a>
     </div>
-    <div class="feature-grid">
+    <div class="latest-rail-wrap">
+      <div class="latest-rail">
       {featured.map((post) => (
-        <article class="feature-card">
-          <div class="feature-top">
-            <span class="pill neutral">{post.data.scope}</span>
-            <span class="feature-period">{post.data.period}</span>
-          </div>
+        <article class="feature-card rail-card" data-kind={post.data.kind}>
+          <p class="feature-period">{post.data.scope}</p>
           <h3><a href={withBase(`/posts/${post.slug}/`)}>{post.data.title}</a></h3>
           <p>{post.data.summary}</p>
-          <dl class="feature-meta">
-            <div>
-              <dt>Role</dt>
-              <dd>{post.data.role}</dd>
-            </div>
-            <div>
-              <dt>Outcome</dt>
-              <dd>{post.data.outcome}</dd>
-            </div>
-            <div>
-              <dt>Stack</dt>
-              <dd>{post.data.stack.join(" / ")}</dd>
-            </div>
-          </dl>
         </article>
       ))}
+      </div>
     </div>
   </section>
 
-  <section class="panel" id="works">
-    <div class="section-heading">
+  <section class="works-stage" id="works">
+    <div class="works-stage-head">
       <div>
-        <p class="eyebrow">Works</p>
-        <h2>実績一覧</h2>
+        <p class="eyebrow">参加したもの</p>
+        <h2>やったこと</h2>
       </div>
       <a class="text-link" href={withBase("/posts/")}>すべて見る</a>
     </div>
-    <div class="works-grid">
-      {works.map((post) => (
-        <a class="work-card" href={withBase(`/posts/${post.slug}/`)}>
-          <div class="work-top">
-            <span class="pill neutral">{post.data.scope}</span>
-            <span class="feature-period">{post.data.period}</span>
-          </div>
+    <div class="works-grid-wrap note-board">
+      <div class="works-grid">
+      {activityPosts.map((post) => (
+        <a class="work-card" href={withBase(`/posts/${post.slug}/`)} data-kind={post.data.kind}>
+          <p class="feature-period">{post.data.scope}</p>
           <h3>{post.data.title}</h3>
           <p>{post.data.summary}</p>
-          <p class="work-role">{post.data.role}</p>
         </a>
       ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="writing-stage">
+    <div class="works-stage-head">
+      <div>
+        <p class="eyebrow">書いたもの</p>
+        <h2>担当した記事</h2>
+      </div>
+      <a class="text-link" href={withBase("/posts/")}>一覧を見る</a>
+    </div>
+    <div class="works-grid-wrap">
+      <div class="works-grid writing-grid">
+      {articlePosts.map((post) => (
+        <a class="work-card article-card" href={withBase(`/posts/${post.slug}/`)} data-kind={post.data.kind}>
+          <p class="feature-period">{post.data.scope}</p>
+          <h3>{post.data.title}</h3>
+          <p>{post.data.summary}</p>
+        </a>
+      ))}
+      </div>
     </div>
   </section>
 
   <style>
     .home-hero,
-    .feature-grid,
-    .feature-meta,
     .works-grid {
       display: grid;
-      gap: 18px;
+      gap: 16px;
     }
 
-    .hero-copy,
+    .hero-title,
     .feature-card,
     .work-card {
       display: grid;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .feature-grid,
+    .home-hero {
+      gap: 12px;
+      padding: 20px 18px 18px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.54), rgba(255, 255, 255, 0.32));
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-title {
+      max-width: 42rem;
+    }
+
+    .hero-title h1 {
+      max-width: none;
+    }
+
     .works-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .latest-strip,
+    .works-stage,
+    .writing-stage {
+      display: grid;
+      gap: 14px;
+      padding: 18px 18px 16px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.24));
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .strip-head,
+    .works-stage-head {
+      display: grid;
+      justify-items: center;
+      text-align: center;
+      gap: 6px;
+      padding-top: 0;
+    }
+
+    .strip-head h2,
+    .works-stage-head h2 {
+      font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+      line-height: 1.2;
+    }
+
+    .strip-head .eyebrow,
+    .works-stage-head .eyebrow {
+      width: fit-content;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .latest-rail {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(260px, 300px);
+      gap: 16px;
+      overflow-x: auto;
+      padding: 8px 2px 10px;
+      scroll-snap-type: x proximity;
+      scrollbar-width: thin;
+    }
+
+    .latest-rail-wrap,
+    .works-grid-wrap {
+      padding-top: 10px;
     }
 
     .feature-card,
     .work-card {
-      padding: 18px;
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.56);
-      transition: transform 180ms ease, border-color 180ms ease;
+      --tape-bg: var(--tape-intern-bg);
+      --tape-border: var(--tape-intern-border);
+      position: relative;
+      padding: 36px 16px 16px;
+      background: var(--surface);
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .feature-card::before,
+    .work-card::before {
+      content: "";
+      position: absolute;
+      top: 14px;
+      left: 18px;
+      width: 40px;
+      height: 12px;
+      background: var(--tape-bg);
+      border: 1px solid var(--tape-border);
+      transform: rotate(-4deg);
+    }
+
+    .feature-card:nth-child(2n) {
+      transform: rotate(-0.45deg);
+    }
+
+    .feature-card:nth-child(3n) {
+      transform: rotate(0.45deg);
+    }
+
+    .work-card:nth-child(3n + 2) {
+      transform: rotate(-0.65deg);
+    }
+
+    .work-card:nth-child(3n) {
+      transform: rotate(0.65deg);
+    }
+
+    .feature-card:nth-child(2n)::before,
+    .work-card:nth-child(3n + 2)::before {
+      transform: rotate(4deg);
+    }
+
+    .feature-card[data-kind="intern"],
+    .work-card[data-kind="intern"] {
+      --tape-bg: var(--tape-intern-bg);
+      --tape-border: var(--tape-intern-border);
+    }
+
+    .feature-card[data-kind="lab"],
+    .work-card[data-kind="lab"] {
+      --tape-bg: var(--tape-lab-bg);
+      --tape-border: var(--tape-lab-border);
+    }
+
+    .feature-card[data-kind="project"],
+    .work-card[data-kind="project"] {
+      --tape-bg: var(--tape-project-bg);
+      --tape-border: var(--tape-project-border);
+    }
+
+    .feature-card[data-kind="writing"],
+    .work-card[data-kind="writing"] {
+      --tape-bg: var(--tape-writing-bg);
+      --tape-border: var(--tape-writing-border);
     }
 
     .feature-card:hover,
     .work-card:hover {
+      transform: translateY(-2px) rotate(0deg);
+      border-color: rgba(37, 99, 235, 0.3);
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+    }
+
+    .rail-card {
+      scroll-snap-align: start;
+      min-height: 100%;
+    }
+
+    .rail-card:hover,
+    .work-card:hover {
       transform: translateY(-2px);
-      border-color: rgba(158, 67, 33, 0.34);
-    }
-
-    .feature-top,
-    .work-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .feature-meta {
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-
-    .feature-meta div {
-      border-top: 1px solid var(--line);
-      padding-top: 10px;
     }
 
     .feature-meta dt,
@@ -151,9 +283,22 @@ const works = posts.slice(0, 6);
     }
 
     @media (max-width: 900px) {
-      .feature-grid,
+      .home-hero,
       .works-grid {
         grid-template-columns: 1fr;
+      }
+
+      .strip-head,
+      .works-stage-head {
+        align-items: flex-start;
+        padding-top: 0;
+      }
+
+      .feature-card:nth-child(2n),
+      .feature-card:nth-child(3n),
+      .work-card:nth-child(3n + 2),
+      .work-card:nth-child(3n) {
+        transform: none;
       }
     }
   </style>

@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { withBase } from "../lib/paths";
+import { profile } from "../data/profile";
 
 interface Props {
   title: string;
@@ -26,19 +27,19 @@ const { title, description } = Astro.props;
       <div class="shell">
         <header class="site-header">
           <div class="header-block">
-            <a class="brand" href={withBase("/")}>Portfolio</a>
-            <p class="site-kicker">Engineer Portfolio</p>
+            <a class="brand" href={withBase("/")}>{profile.name}</a>
+            <p class="site-kicker">公開実績 / 記録</p>
           </div>
           <nav class="nav">
-            <a href={withBase("/")}>Home</a>
-            <a href={withBase("/posts/")}>Works</a>
+            <a href={withBase("/")}>トップ</a>
+            <a href={withBase("/posts/")}>実績一覧</a>
           </nav>
         </header>
         <main class="content-field">
           <slot />
         </main>
         <footer class="site-footer">
-          <p>{title}</p>
+          <p>{profile.name}</p>
         </footer>
       </div>
     </div>

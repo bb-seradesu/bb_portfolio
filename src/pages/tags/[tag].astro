@@ -49,22 +49,18 @@ const posts = (await getCollection("posts"))
           <p>{post.data.summary}</p>
         </div>
         <dl class="ledger-meta">
-          <div>
-            <dt>Role</dt>
-            <dd>{post.data.role}</dd>
-          </div>
-          <div>
-            <dt>Scope</dt>
-            <dd>{post.data.scope}</dd>
-          </div>
-          <div>
-            <dt>Outcome</dt>
-            <dd>{post.data.outcome}</dd>
-          </div>
-          <div>
-            <dt>Stack</dt>
-            <dd>{post.data.stack.join(" / ")}</dd>
-          </div>
+          {post.data.role && (
+            <div>
+              <dt>やってたこと</dt>
+              <dd>{post.data.role}</dd>
+            </div>
+          )}
+          {post.data.stack.length > 0 && (
+            <div>
+              <dt>使ったもの</dt>
+              <dd>{post.data.stack.join(" / ")}</dd>
+            </div>
+          )}
         </dl>
       </a>
     ))}

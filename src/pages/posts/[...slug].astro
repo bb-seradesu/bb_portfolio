@@ -44,39 +44,43 @@ const { Content } = await render(post);
 
     <section class="case-sheet">
       <dl class="ledger-meta">
-        <div>
-          <dt>Role</dt>
-          <dd>{post.data.role}</dd>
-        </div>
-        <div>
-          <dt>Scope</dt>
-          <dd>{post.data.scope}</dd>
-        </div>
-        <div>
-          <dt>Period</dt>
-          <dd>{post.data.period}</dd>
-        </div>
-        <div>
-          <dt>Outcome</dt>
-          <dd>{post.data.outcome}</dd>
-        </div>
-        <div>
-          <dt>Stack</dt>
-          <dd>{post.data.stack.join(" / ")}</dd>
-        </div>
+        {post.data.role && (
+          <div>
+            <dt>やってたこと</dt>
+            <dd>{post.data.role}</dd>
+          </div>
+        )}
+        {post.data.scope && (
+          <div>
+            <dt>分類</dt>
+            <dd>{post.data.scope}</dd>
+          </div>
+        )}
+        {post.data.period && (
+          <div>
+            <dt>時期</dt>
+            <dd>{post.data.period}</dd>
+          </div>
+        )}
+        {post.data.stack.length > 0 && (
+          <div>
+            <dt>使ったもの</dt>
+            <dd>{post.data.stack.join(" / ")}</dd>
+          </div>
+        )}
       </dl>
     </section>
 
     <section class="comparison-board">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">Highlights</p>
-          <h2>要点</h2>
+          <p class="eyebrow">メモ</p>
+          <h2>ちょいメモ</h2>
         </div>
       </div>
-      <div class="check-list">
+      <div class="check-list note-pins">
         {post.data.highlights.map((item) => (
-          <p>{item}</p>
+          <p class="pin-note">{item}</p>
         ))}
       </div>
     </section>
@@ -85,4 +89,56 @@ const { Content } = await render(post);
       <Content />
     </section>
   </article>
+
+  <style>
+    .note-pins {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+    }
+
+    .pin-note {
+      position: relative;
+      padding: 16px 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(239, 246, 255, 0.92), rgba(225, 236, 255, 0.78));
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .pin-note::before {
+      content: "";
+      position: absolute;
+      top: -7px;
+      left: 16px;
+      width: 38px;
+      height: 14px;
+      border-radius: 5px;
+      background: rgba(233, 239, 248, 0.92);
+      border: 1px solid rgba(97, 137, 191, 0.18);
+      transform: rotate(-6deg);
+    }
+
+    .pin-note:nth-child(2n) {
+      transform: rotate(-1.5deg);
+    }
+
+    .pin-note:nth-child(3n) {
+      transform: rotate(1.2deg);
+    }
+
+    .pin-note:hover {
+      transform: translateY(-2px) rotate(0deg);
+      border-color: rgba(37, 99, 235, 0.26);
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.1);
+    }
+
+    @media (max-width: 640px) {
+      .pin-note:nth-child(2n),
+      .pin-note:nth-child(3n) {
+        transform: none;
+      }
+    }
+  </style>
 </BaseLayout>
