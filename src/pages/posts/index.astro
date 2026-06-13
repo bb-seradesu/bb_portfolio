@@ -270,56 +270,98 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug));
     }
 
     .case-row {
-      --tape-bg: var(--tape-intern-bg);
-      --tape-border: var(--tape-intern-border);
+      --pin-color: var(--tape-intern-bg);
+      --pin-ring: var(--tape-intern-border);
       position: relative;
-      background: var(--surface);
-      padding-top: 30px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.84));
+      padding-top: 26px;
+      transform-origin: center 18px;
     }
 
     .article-row {
       position: relative;
     }
 
-    .case-row::before {
+    .case-row::before,
+    .case-row::after {
       content: "";
       position: absolute;
-      top: 12px;
-      left: 18px;
-      width: 40px;
-      height: 12px;
-      background: var(--tape-bg);
-      border: 1px solid var(--tape-border);
-      transform: rotate(-4deg);
+      left: 50%;
+      transform: translateX(-50%);
     }
 
-    .mini-note[data-kind="intern"],
-    .case-row[data-kind="intern"] {
+    .case-row::before {
+      top: 8px;
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.9), transparent 34%),
+        var(--pin-color);
+      border: 1px solid var(--pin-ring);
+      box-shadow:
+        0 2px 0 0 rgba(255, 255, 255, 0.55) inset,
+        0 3px 8px var(--pin-metal-shadow);
+      z-index: 2;
+    }
+
+    .case-row::after {
+      top: 18px;
+      width: 18px;
+      height: 8px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at center, var(--pin-hole) 0 28%, transparent 72%);
+      opacity: 0.9;
+    }
+
+    .case-row:nth-child(2n) {
+      transform: rotate(-0.25deg);
+    }
+
+    .case-row:nth-child(3n) {
+      transform: rotate(0.25deg);
+    }
+
+    .mini-note[data-kind="intern"] {
       --tape-bg: var(--tape-intern-bg);
       --tape-border: var(--tape-intern-border);
     }
 
-    .mini-note[data-kind="lab"],
-    .case-row[data-kind="lab"] {
+    .case-row[data-kind="intern"] {
+      --pin-color: var(--tape-intern-bg);
+      --pin-ring: var(--tape-intern-border);
+    }
+
+    .mini-note[data-kind="lab"] {
       --tape-bg: var(--tape-lab-bg);
       --tape-border: var(--tape-lab-border);
     }
 
-    .mini-note[data-kind="project"],
-    .case-row[data-kind="project"] {
+    .case-row[data-kind="lab"] {
+      --pin-color: var(--tape-lab-bg);
+      --pin-ring: var(--tape-lab-border);
+    }
+
+    .mini-note[data-kind="project"] {
       --tape-bg: var(--tape-project-bg);
       --tape-border: var(--tape-project-border);
     }
 
-    .mini-note[data-kind="writing"],
-    .case-row[data-kind="writing"] {
+    .case-row[data-kind="project"] {
+      --pin-color: var(--tape-project-bg);
+      --pin-ring: var(--tape-project-border);
+    }
+
+    .mini-note[data-kind="writing"] {
       --tape-bg: var(--tape-writing-bg);
       --tape-border: var(--tape-writing-border);
     }
 
-    .article-row:nth-child(2n)::before,
-    .case-row:nth-child(2n)::before {
-      transform: rotate(4deg);
+    .case-row[data-kind="writing"] {
+      --pin-color: var(--tape-writing-bg);
+      --pin-ring: var(--tape-writing-border);
     }
 
     .case-matrix {
@@ -354,6 +396,11 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug));
 
       .mini-note:nth-child(2n),
       .mini-note:nth-child(3n) {
+        transform: none;
+      }
+
+      .case-row:nth-child(2n),
+      .case-row:nth-child(3n) {
         transform: none;
       }
 

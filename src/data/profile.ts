@@ -7,3 +7,4 @@ export const profile = {
     { label: "X", href: "https://x.com/your-account" }
   ]
 };
+

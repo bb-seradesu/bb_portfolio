@@ -188,6 +188,11 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
 
     .feature-card,
     .work-card {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .feature-card {
       --tape-bg: var(--tape-intern-bg);
       --tape-border: var(--tape-intern-border);
       position: relative;
@@ -196,8 +201,18 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
       transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
     }
 
-    .feature-card::before,
-    .work-card::before {
+    .work-card {
+      --pin-color: var(--tape-intern-bg);
+      --pin-ring: var(--tape-intern-border);
+      position: relative;
+      padding: 28px 16px 16px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.84));
+      transform-origin: center 18px;
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .feature-card::before {
       content: "";
       position: absolute;
       top: 14px;
@@ -207,6 +222,39 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
       background: var(--tape-bg);
       border: 1px solid var(--tape-border);
       transform: rotate(-4deg);
+    }
+
+    .work-card::before,
+    .work-card::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .work-card::before {
+      top: 8px;
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.9), transparent 34%),
+        var(--pin-color);
+      border: 1px solid var(--pin-ring);
+      box-shadow:
+        0 2px 0 0 rgba(255, 255, 255, 0.55) inset,
+        0 3px 8px var(--pin-metal-shadow);
+      z-index: 2;
+    }
+
+    .work-card::after {
+      top: 18px;
+      width: 18px;
+      height: 8px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at center, var(--pin-hole) 0 28%, transparent 72%);
+      opacity: 0.9;
     }
 
     .feature-card:nth-child(2n) {
@@ -234,24 +282,32 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
     .work-card[data-kind="intern"] {
       --tape-bg: var(--tape-intern-bg);
       --tape-border: var(--tape-intern-border);
+      --pin-color: var(--tape-intern-bg);
+      --pin-ring: var(--tape-intern-border);
     }
 
     .feature-card[data-kind="lab"],
     .work-card[data-kind="lab"] {
       --tape-bg: var(--tape-lab-bg);
       --tape-border: var(--tape-lab-border);
+      --pin-color: var(--tape-lab-bg);
+      --pin-ring: var(--tape-lab-border);
     }
 
     .feature-card[data-kind="project"],
     .work-card[data-kind="project"] {
       --tape-bg: var(--tape-project-bg);
       --tape-border: var(--tape-project-border);
+      --pin-color: var(--tape-project-bg);
+      --pin-ring: var(--tape-project-border);
     }
 
     .feature-card[data-kind="writing"],
     .work-card[data-kind="writing"] {
       --tape-bg: var(--tape-writing-bg);
       --tape-border: var(--tape-writing-border);
+      --pin-color: var(--tape-writing-bg);
+      --pin-ring: var(--tape-writing-border);
     }
 
     .feature-card:hover,

@@ -19,6 +19,9 @@
   --tape-project-border: rgba(116, 174, 143, 0.16);
   --tape-writing-bg: rgba(255, 221, 204, 0.92);
   --tape-writing-border: rgba(197, 135, 110, 0.14);
+  --pin-metal: #e5edf8;
+  --pin-metal-shadow: rgba(82, 104, 141, 0.24);
+  --pin-hole: rgba(87, 109, 146, 0.18);
   --shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
   --radius-lg: 12px;
   --radius-md: 10px;
