@@ -5,6 +5,6 @@ const base = process.env.GITHUB_ACTIONS === "true" && repository ? `/${repositor
 
 export default defineConfig({
   base,
-  site: "https://example.github.io",
+  site: "https://bb-seradesu.github.io",
   output: "static"
 });
