@@ -3,20 +3,12 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { profile } from "../data/profile";
 import { withBase } from "../lib/paths";
+import { formatPostDate, getDisplayTags } from "../lib/postMeta";
 
 const posts = (await getCollection("posts"))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 const featured = posts.filter((post) => post.data.featured).slice(0, 3);
-const articleLikeSlugs = new Set(
-  posts
-    .filter((post) =>
-      post.data.kind === "writing" ||
-      post.data.tags.includes("writing") ||
-      post.data.tags.includes("documentation") ||
-      post.data.tags.includes("communication")
-    )
-    .map((post) => post.slug)
-);
+const articleLikeSlugs = new Set(posts.filter((post) => post.data.kind === "writing").map((post) => post.slug));
 const activityPosts = posts.filter((post) => !articleLikeSlugs.has(post.slug)).slice(0, 4);
 const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).slice(0, 4);
 ---
@@ -49,9 +41,15 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
       <div class="latest-rail">
       {featured.map((post) => (
         <article class="feature-card rail-card" data-kind={post.data.kind}>
-          <p class="feature-period">{post.data.scope}</p>
+          <time class="feature-date" datetime={post.data.publishedAt.toISOString()}>
+            {formatPostDate(post.data)}
+          </time>
           <h3><a href={withBase(`/posts/${post.slug}/`)}>{post.data.title}</a></h3>
-          <p>{post.data.summary}</p>
+          <div class="tag-row">
+            {getDisplayTags(post.data).map((tag) => (
+              <span class="pill neutral">{tag}</span>
+            ))}
+          </div>
         </article>
       ))}
       </div>
@@ -70,9 +68,15 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
       <div class="works-grid">
       {activityPosts.map((post) => (
         <a class="work-card" href={withBase(`/posts/${post.slug}/`)} data-kind={post.data.kind}>
-          <p class="feature-period">{post.data.scope}</p>
+          <time class="feature-date" datetime={post.data.publishedAt.toISOString()}>
+            {formatPostDate(post.data)}
+          </time>
           <h3>{post.data.title}</h3>
-          <p>{post.data.summary}</p>
+          <div class="tag-row">
+            {getDisplayTags(post.data).map((tag) => (
+              <span class="pill neutral">{tag}</span>
+            ))}
+          </div>
         </a>
       ))}
       </div>
@@ -91,9 +95,15 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
       <div class="works-grid writing-grid">
       {articlePosts.map((post) => (
         <a class="work-card article-card" href={withBase(`/posts/${post.slug}/`)} data-kind={post.data.kind}>
-          <p class="feature-period">{post.data.scope}</p>
+          <time class="feature-date" datetime={post.data.publishedAt.toISOString()}>
+            {formatPostDate(post.data)}
+          </time>
           <h3>{post.data.title}</h3>
-          <p>{post.data.summary}</p>
+          <div class="tag-row">
+            {getDisplayTags(post.data).map((tag) => (
+              <span class="pill neutral">{tag}</span>
+            ))}
+          </div>
         </a>
       ))}
       </div>
@@ -328,7 +338,7 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
     }
 
     .feature-meta dt,
-    .feature-period,
+    .feature-date,
     .work-role {
       color: var(--muted);
       font-size: 0.84rem;

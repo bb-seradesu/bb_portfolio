@@ -2,24 +2,18 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { withBase } from "../../lib/paths";
-
-const kinds = {
-  intern: "Internship",
-  lab: "Lab",
-  project: "Project",
-  writing: "Writing"
-} as const;
+import { formatPostDate, getDisplayTagPath, getDisplayTags } from "../../lib/postMeta";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
-  const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+  const tags = [...new Set(posts.flatMap((post) => getDisplayTags(post.data)))];
 
   return tags.map((tag) => ({ params: { tag } }));
 }
 
 const { tag } = Astro.params;
 const posts = (await getCollection("posts"))
-  .filter((post) => post.data.tags.includes(tag || ""))
+  .filter((post) => getDisplayTags(post.data).includes(tag || ""))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 ---
 
@@ -39,30 +33,30 @@ const posts = (await getCollection("posts"))
 
   <section class="work-ledger">
     {posts.map((post) => (
-      <a class="ledger-row" href={withBase(`/posts/${post.slug}/`)}>
+      <article class="ledger-row tag-ledger-row">
         <div class="ledger-row-main">
           <div class="meta-row">
-            <span class={`pill kind-${post.data.kind}`}>{kinds[post.data.kind]}</span>
-            <span>{post.data.period}</span>
+            <time datetime={post.data.publishedAt.toISOString()}>{formatPostDate(post.data)}</time>
           </div>
-          <h2>{post.data.title}</h2>
-          <p>{post.data.summary}</p>
+          <h2><a href={withBase(`/posts/${post.slug}/`)}>{post.data.title}</a></h2>
+          <div class="tag-row">
+            {getDisplayTags(post.data).map((item) => (
+              <a class={`pill neutral ${item === tag ? "active-tag" : ""}`} href={withBase(getDisplayTagPath(item))}>{item}</a>
+            ))}
+          </div>
         </div>
-        <dl class="ledger-meta">
-          {post.data.role && (
-            <div>
-              <dt>やってたこと</dt>
-              <dd>{post.data.role}</dd>
-            </div>
-          )}
-          {post.data.stack.length > 0 && (
-            <div>
-              <dt>使ったもの</dt>
-              <dd>{post.data.stack.join(" / ")}</dd>
-            </div>
-          )}
-        </dl>
-      </a>
+      </article>
     ))}
   </section>
+
+  <style>
+    .tag-ledger-row {
+      grid-template-columns: 1fr;
+    }
+
+    .active-tag {
+      border-color: rgba(37, 99, 235, 0.28);
+      background: rgba(37, 99, 235, 0.1);
+    }
+  </style>
 </BaseLayout>
