@@ -13,7 +13,7 @@ const activityPosts = posts.filter((post) => !articleLikeSlugs.has(post.slug)).s
 const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).slice(0, 4);
 ---
 
-<BaseLayout title={`${profile.name} | ${profile.title}`} description={profile.intro}>
+<BaseLayout title={`実績と記事 | ${profile.title}`} description={profile.intro}>
   <section class="hero home-hero">
     <div class="hero-title">
       <p class="eyebrow">{profile.title}</p>
