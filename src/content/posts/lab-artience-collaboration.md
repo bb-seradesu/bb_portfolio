@@ -2,14 +2,14 @@
 title: "artienceとの共同研究"
 summary: "artienceとの共同研究プロジェクトへの参加について、関わり方を整理した記録です。"
 publishedAt: 2024-07-09
-kind: "project"
-tags: ["project", "research", "collaboration"]
+kind: "lab"
+tags: ["lab", "research", "collaboration"]
 sourceUrl: "https://osawa-lab.com/news/20240709_01"
 featured: true
 role: "研究参加、内容整理、対外向け記録"
 period: "2024.07 - 継続中"
 stack: ["Research", "Human-Agent Interaction"]
-scope: "課外活動"
+scope: "研究室"
 outcome: "共同研究のプロジェクトメンバーとして継続的に参加している"
 team: "研究室と artience株式会社の共同プロジェクト"
 deliverable: "共同研究ページ、研究内容の整理"

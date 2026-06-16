@@ -2,14 +2,14 @@
 title: "CEATEC 2024出展"
 summary: "CEATEC 2024 出展で担当していた展示運営まわりの作業を整理した記録です。"
 publishedAt: 2024-11-15
-kind: "project"
-tags: ["project", "event", "exhibition"]
+kind: "lab"
+tags: ["lab", "event", "exhibition"]
 sourceUrl: "https://osawa-lab.com/news/20241115_01"
 featured: false
 role: "出展準備、説明整理、展示対応"
 period: "2024.11"
 stack: ["Presentation", "Exhibition", "Communication"]
-scope: "課外活動"
+scope: "研究室"
 outcome: "展示運営と来場者対応を含めて現場を支えた"
 team: "共同研究プロジェクトとして出展準備を進行"
 deliverable: "展示説明、出展準備"
