@@ -17,8 +17,7 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
   <section class="hero home-hero">
     <div class="hero-title">
       <p class="eyebrow">{profile.title}</p>
-      <h1>{profile.name}</h1>
-      <p class="lead">{profile.intro}</p>
+      <h1><span class="marker">{profile.name}</span></h1>
       <div class="hero-actions">
         <a class="button primary" href="#latest-posts">新着記事</a>
         <a class="button ghost" href="#works">実績一覧</a>
@@ -27,15 +26,21 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
         ))}
       </div>
     </div>
+    <p class="speech lead">
+      <svg class="speech-tail" aria-hidden="true" width="30" height="28" viewBox="0 0 30 28"><path d="M30 4 Q 14 8 1 3 Q 10 14 30 22" /></svg>
+      <svg class="speech-lines" aria-hidden="true" width="26" height="26" viewBox="0 0 26 26"><path d="M4 16 L10 18" /><path d="M8 6 L13 13" /><path d="M19 2 L18 10" /></svg>
+      {profile.intro}
+    </p>
   </section>
 
   <section class="latest-strip" id="latest-posts">
     <div class="strip-head">
-      <div>
-        <p class="eyebrow">最近追加</p>
-        <h2>新着記事</h2>
-      </div>
-      <a class="text-link" href={withBase("/posts/")}>一覧を見る</a>
+      <h2 class="section-title">
+        <span class="section-num">1</span>
+        <span class="section-name">新着記事</span>
+        <span class="eyebrow">最近追加</span>
+      </h2>
+      <a class="text-link note-arrow" href={withBase("/posts/")}>一覧を見る<svg aria-hidden="true" width="44" height="18" viewBox="0 0 44 18"><path d="M2 12 C 14 4, 28 4, 40 9" /><path d="M33 4 L40 9 L33 13" /></svg></a>
     </div>
     <div class="latest-rail-wrap">
       <div class="latest-rail">
@@ -45,6 +50,7 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
             {formatPostDate(post.data)}
           </time>
           <h3><a href={withBase(`/posts/${post.slug}/`)}>{post.data.title}</a></h3>
+          <p class="card-summary">{post.data.summary}</p>
           <div class="tag-row">
             {getDisplayTags(post.data).map((tag) => (
               <span class="pill neutral">{tag}</span>
@@ -58,142 +64,220 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
 
   <section class="works-stage" id="works">
     <div class="works-stage-head">
-      <div>
-        <p class="eyebrow">参加したもの</p>
-        <h2>やったこと</h2>
-      </div>
-      <a class="text-link" href={withBase("/posts/")}>すべて見る</a>
+      <h2 class="section-title">
+        <span class="section-num">2</span>
+        <span class="section-name">やったこと</span>
+        <span class="eyebrow">参加したもの</span>
+      </h2>
+      <a class="text-link note-arrow" href={withBase("/posts/")}>すべて見る<svg aria-hidden="true" width="44" height="18" viewBox="0 0 44 18"><path d="M2 12 C 14 4, 28 4, 40 9" /><path d="M33 4 L40 9 L33 13" /></svg></a>
     </div>
     <div class="works-grid-wrap note-board">
-      <div class="works-grid">
+      <div class="works-grid activity-grid">
       {activityPosts.map((post) => (
-        <a class="work-card" href={withBase(`/posts/${post.slug}/`)} data-kind={post.data.kind}>
-          <time class="feature-date" datetime={post.data.publishedAt.toISOString()}>
-            {formatPostDate(post.data)}
-          </time>
-          <h3>{post.data.title}</h3>
-          <div class="tag-row">
-            {getDisplayTags(post.data).map((tag) => (
-              <span class="pill neutral">{tag}</span>
-            ))}
-          </div>
-        </a>
+        <div class="work-item">
+          <a class="work-card" href={withBase(`/posts/${post.slug}/`)} data-kind={post.data.kind}>
+            <time class="feature-date" datetime={post.data.publishedAt.toISOString()}>
+              {formatPostDate(post.data)}
+            </time>
+            <h3>{post.data.title}</h3>
+            <div class="tag-row">
+              {getDisplayTags(post.data).map((tag) => (
+                <span class="pill neutral">{tag}</span>
+              ))}
+            </div>
+          </a>
+          {post.data.role && (
+            <p class="role-bubble">
+              <svg class="role-tail" aria-hidden="true" width="26" height="22" viewBox="0 0 26 22"><path d="M3 22 Q 5 10 1 1 Q 13 9 21 22" /></svg>
+              <svg class="role-lines" aria-hidden="true" width="18" height="18" viewBox="0 0 18 18"><path d="M2 8 L7 10" /><path d="M5 2 L9 7" /><path d="M12 1 L12 6" /></svg>
+              <span class="role-label">担当</span>
+              {post.data.role}
+            </p>
+          )}
+        </div>
       ))}
       </div>
     </div>
   </section>
 
   <section class="writing-stage">
+    <span class="box-label">書いたもの</span>
     <div class="works-stage-head">
-      <div>
-        <p class="eyebrow">書いたもの</p>
-        <h2>担当した記事</h2>
-      </div>
-      <a class="text-link" href={withBase("/posts/")}>一覧を見る</a>
+      <h2 class="section-title">
+        <span class="section-num">3</span>
+        <span class="section-name">担当した記事</span>
+      </h2>
+      <a class="text-link note-arrow" href={withBase("/posts/")}>一覧を見る<svg aria-hidden="true" width="44" height="18" viewBox="0 0 44 18"><path d="M2 12 C 14 4, 28 4, 40 9" /><path d="M33 4 L40 9 L33 13" /></svg></a>
     </div>
-    <div class="works-grid-wrap">
-      <div class="works-grid writing-grid">
-      {articlePosts.map((post) => (
-        <a class="work-card article-card" href={withBase(`/posts/${post.slug}/`)} data-kind={post.data.kind}>
-          <time class="feature-date" datetime={post.data.publishedAt.toISOString()}>
-            {formatPostDate(post.data)}
-          </time>
-          <h3>{post.data.title}</h3>
-          <div class="tag-row">
-            {getDisplayTags(post.data).map((tag) => (
-              <span class="pill neutral">{tag}</span>
-            ))}
-          </div>
-        </a>
-      ))}
-      </div>
+    <div class="works-grid writing-grid">
+    {articlePosts.map((post) => (
+      <a class="article-card" href={withBase(`/posts/${post.slug}/`)} data-kind={post.data.kind}>
+        <time class="feature-date" datetime={post.data.publishedAt.toISOString()}>
+          {formatPostDate(post.data)}
+        </time>
+        <h3>{post.data.title}</h3>
+        <p class="article-stack">{getDisplayTags(post.data).join(" ・ ")}</p>
+      </a>
+    ))}
     </div>
   </section>
 
   <style>
-    .home-hero,
+    .home-hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 24px 40px;
+      padding: 18px 0;
+    }
+
     .works-grid {
       display: grid;
-      gap: 16px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
     }
 
     .hero-title,
     .feature-card,
-    .work-card {
+    .work-card,
+    .article-card {
       display: grid;
       gap: 10px;
-    }
-
-    .home-hero {
-      gap: 12px;
-      padding: 20px 18px 18px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.54), rgba(255, 255, 255, 0.32));
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .hero-title {
-      max-width: 42rem;
     }
 
     .hero-title h1 {
       max-width: none;
     }
 
-    .works-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
+    .speech {
+      position: relative;
+      flex: 0 1 380px;
+      margin-left: 20px;
+      padding: 18px 22px;
+      color: var(--text);
+      background: white;
+      border: 2px solid #1f2937;
+      border-radius: 28px;
+      box-shadow: 5px 5px 0 rgba(31, 79, 160, 0.2);
+      transform: rotate(-1deg);
+    }
+
+    .speech-tail {
+      position: absolute;
+      left: -27px;
+      top: 30px;
+      overflow: visible;
+    }
+
+    .speech-tail path {
+      fill: white;
+      stroke: #1f2937;
+      stroke-width: 2;
+      stroke-linejoin: round;
+    }
+
+    .speech::before {
+      content: "";
+      position: absolute;
+      left: -2px;
+      top: 35px;
+      width: 4px;
+      height: 16px;
+      background: white;
+    }
+
+    .speech-lines,
+    .role-lines {
+      position: absolute;
+      fill: none;
+      stroke-linecap: round;
+    }
+
+    .speech-lines {
+      top: -18px;
+      right: -14px;
+      stroke: var(--cover);
+      stroke-width: 2;
     }
 
     .latest-strip,
     .works-stage,
     .writing-stage {
       display: grid;
-      gap: 14px;
-      padding: 18px 18px 16px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.24));
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
+      grid-template-columns: minmax(0, 1fr);
+      gap: 22px;
     }
 
     .strip-head,
     .works-stage-head {
-      display: grid;
-      justify-items: center;
-      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: clamp(1.3rem, 2vw, 1.5rem);
+      line-height: 1.3;
+    }
+
+    .section-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--cover);
+      color: white;
+      font-size: 1rem;
+    }
+
+    .section-name {
+      padding-bottom: 2px;
+      border-bottom: 4px double var(--cover);
+    }
+
+    .section-title .eyebrow {
+      font-weight: 400;
+    }
+
+    .note-arrow {
+      display: inline-flex;
+      align-items: center;
       gap: 6px;
-      padding-top: 0;
+      font-size: 0.88rem;
     }
 
-    .strip-head h2,
-    .works-stage-head h2 {
-      font-size: clamp(0.9rem, 1.2vw, 1.05rem);
-      line-height: 1.2;
+    .note-arrow::after {
+      display: none;
     }
 
-    .strip-head .eyebrow,
-    .works-stage-head .eyebrow {
-      width: fit-content;
-      padding: 0;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
+    .note-arrow svg {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+    }
+
+    .card-summary {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.75;
     }
 
     .latest-rail {
       display: grid;
       grid-auto-flow: column;
-      grid-auto-columns: minmax(260px, 300px);
-      gap: 16px;
+      grid-auto-columns: minmax(260px, 1fr);
+      gap: 18px;
       overflow-x: auto;
       padding: 8px 2px 10px;
       scroll-snap-type: x proximity;
       scrollbar-width: thin;
-    }
-
-    .latest-rail-wrap,
-    .works-grid-wrap {
-      padding-top: 10px;
     }
 
     .feature-card,
@@ -207,7 +291,7 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
       --tape-border: var(--tape-intern-border);
       position: relative;
       padding: 36px 16px 16px;
-      background: var(--surface);
+      background: rgba(255, 255, 255, 0.94);
       transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
     }
 
@@ -275,16 +359,15 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
       transform: rotate(0.45deg);
     }
 
-    .work-card:nth-child(3n + 2) {
+    .work-item:nth-child(3n + 2) .work-card {
       transform: rotate(-0.65deg);
     }
 
-    .work-card:nth-child(3n) {
+    .work-item:nth-child(3n) .work-card {
       transform: rotate(0.65deg);
     }
 
-    .feature-card:nth-child(2n)::before,
-    .work-card:nth-child(3n + 2)::before {
+    .feature-card:nth-child(2n)::before {
       transform: rotate(4deg);
     }
 
@@ -321,7 +404,8 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
     }
 
     .feature-card:hover,
-    .work-card:hover {
+    .work-card:hover,
+    .work-item .work-card:hover {
       transform: translateY(-2px) rotate(0deg);
       border-color: rgba(37, 99, 235, 0.3);
       box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
@@ -332,39 +416,144 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
       min-height: 100%;
     }
 
-    .rail-card:hover,
-    .work-card:hover {
-      transform: translateY(-2px);
-    }
-
-    .feature-meta dt,
-    .feature-date,
-    .work-role {
+    .feature-date {
       color: var(--muted);
       font-size: 0.84rem;
     }
 
-    .feature-meta dd {
-      margin: 0;
+    .activity-grid {
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 40px 18px;
+      align-items: start;
+    }
+
+    .work-item {
+      display: grid;
+      gap: 14px;
+    }
+
+    .role-bubble {
+      position: relative;
+      margin: 8px 0 0 14px;
+      padding: 18px 14px 12px;
+      background: white;
+      border: 1.5px solid #6b5d1c;
+      border-radius: 18px 18px 18px 4px;
+      box-shadow: 3px 3px 0 rgba(107, 93, 28, 0.22);
+      font-size: 0.82rem;
+      line-height: 1.7;
+      transform: rotate(-0.8deg);
+    }
+
+    .role-tail {
+      position: absolute;
+      top: -20px;
+      left: 26px;
+      overflow: visible;
+    }
+
+    .role-tail path {
+      fill: white;
+      stroke: #6b5d1c;
+      stroke-width: 1.5;
+      stroke-linejoin: round;
+    }
+
+    .role-bubble::before {
+      content: "";
+      position: absolute;
+      top: -1.5px;
+      left: 30px;
+      width: 16px;
+      height: 3px;
+      background: white;
+    }
+
+    .role-lines {
+      top: -14px;
+      left: -12px;
+      stroke: #6b5d1c;
+      stroke-width: 1.5;
+    }
+
+    .role-label {
+      position: absolute;
+      top: -11px;
+      right: 12px;
+      padding: 1px 9px;
+      background: var(--cover);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.6;
+      transform: rotate(2deg);
+      box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15);
+    }
+
+    .writing-stage {
+      position: relative;
+      margin-top: 16px;
+      padding: 40px 22px 24px;
+      border: 2px dashed var(--cover);
+      border-radius: 6px;
+      background: rgba(253, 253, 251, 0.7);
+    }
+
+    .box-label {
+      position: absolute;
+      top: -16px;
+      left: 20px;
+      padding: 4px 14px;
+      background: var(--cover);
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .writing-grid {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+
+    .article-card {
+      gap: 8px;
+      padding: 16px;
+      background: white;
+      border: 1px solid var(--line);
+      transition: transform 180ms ease, border-color 180ms ease;
+    }
+
+    .article-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(37, 99, 235, 0.3);
+    }
+
+    .article-stack {
+      color: #1c3f80;
+      font-size: 0.76rem;
     }
 
     @media (max-width: 900px) {
-      .home-hero,
       .works-grid {
         grid-template-columns: 1fr;
       }
 
-      .strip-head,
-      .works-stage-head {
-        align-items: flex-start;
-        padding-top: 0;
-      }
-
       .feature-card:nth-child(2n),
       .feature-card:nth-child(3n),
-      .work-card:nth-child(3n + 2),
-      .work-card:nth-child(3n) {
+      .work-item:nth-child(3n + 2) .work-card,
+      .work-item:nth-child(3n) .work-card {
         transform: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .speech {
+        margin-left: 22px;
+      }
+
+      .writing-stage {
+        padding: 36px 12px 16px;
       }
     }
   </style>

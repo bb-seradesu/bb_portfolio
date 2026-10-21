@@ -11,6 +11,11 @@
   --accent-soft: rgba(37, 99, 235, 0.08);
   --rule-blue: rgba(59, 130, 246, 0.09);
   --margin-red: rgba(146, 167, 202, 0.1);
+  --grid-minor: rgba(86, 116, 160, 0.11);
+  --grid-major: rgba(86, 116, 160, 0.2);
+  --grid: 18px;
+  --cover: #1f4fa3;
+  --marker: rgba(96, 165, 250, 0.32);
   --tape-intern-bg: rgba(255, 238, 173, 0.92);
   --tape-intern-border: rgba(190, 165, 91, 0.16);
   --tape-lab-bg: rgba(219, 233, 251, 0.9);
@@ -38,11 +43,7 @@
 html {
   min-height: 100%;
   font-family: "Hiragino Sans", "Yu Gothic Medium", "Yu Gothic", "Noto Sans JP", sans-serif;
-  background:
-    linear-gradient(90deg, transparent 0, transparent 84px, var(--margin-red) 84px, var(--margin-red) 86px, transparent 86px),
-    repeating-linear-gradient(180deg, transparent 0, transparent 33px, var(--rule-blue) 33px, var(--rule-blue) 34px),
-    radial-gradient(circle at top right, rgba(125, 183, 255, 0.09), transparent 24%),
-    var(--paper);
+  background: #e9eef5;
   color: var(--text);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -76,6 +77,20 @@ dt {
 .shell {
   width: min(1080px, calc(100% - 24px));
   margin: 0 auto;
+  padding: 0 28px 28px;
+  background: #fdfdfb;
+  border-top: 10px solid var(--cover);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.06), 0 18px 40px rgba(15, 23, 42, 0.08);
+}
+
+.content-field {
+  padding: calc(var(--grid) * 2) var(--grid);
+  background:
+    linear-gradient(var(--grid-major) 1px, transparent 1px) 0 0 / 100% calc(var(--grid) * 2),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px) 0 0 / calc(var(--grid) * 2) 100%,
+    linear-gradient(var(--grid-minor) 1px, transparent 1px) 0 0 / 100% var(--grid),
+    linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px) 0 0 / var(--grid) 100%;
+  border: 1px solid var(--grid-major);
 }
 
 .content-field {
@@ -92,13 +107,13 @@ dt {
 }
 
 .site-header {
-  margin-bottom: 18px;
-  padding: 6px 0 18px;
-  border-bottom: 1px solid var(--line);
+  margin-bottom: 14px;
+  padding: 22px 0 10px;
+  border-bottom: 2px solid var(--cover);
 }
 
 .site-footer {
-  margin-top: 36px;
+  margin-top: 14px;
   padding-top: 14px;
   border-top: 1px solid var(--line);
   color: var(--muted);
@@ -251,8 +266,8 @@ h3 {
 
 .button.primary,
 .filter-button.active {
-  background: #1f3b68;
-  border-color: #1f3b68;
+  background: var(--cover);
+  border-color: var(--cover);
   color: white;
 }
 
@@ -388,8 +403,9 @@ button:focus-visible {
 }
 
 .pill.neutral {
-  border-color: var(--line);
-  background: rgba(37, 99, 235, 0.04);
+  border-color: rgba(31, 79, 160, 0.18);
+  background: #eaf2ff;
+  color: #1c3f80;
 }
 
 .kind-intern,
@@ -503,4 +519,39 @@ button:focus-visible {
     transition: none !important;
     scroll-behavior: auto !important;
   }
+}
+
+.marker {
+  background: linear-gradient(transparent 58%, var(--marker) 58%, var(--marker) 92%, transparent 92%);
+}
+
+.header-meta {
+  display: flex;
+  gap: 18px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.header-meta span {
+  min-width: 7.5em;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--grid-major);
+}
+
+@media (max-width: 640px) {
+  .shell {
+    padding: 0 12px 16px;
+  }
+
+  .content-field {
+    padding: calc(var(--grid) * 2) 8px;
+  }
+}
+
+.content-field {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.content-field > * {
+  min-width: 0;
 }
