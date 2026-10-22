@@ -27,7 +27,7 @@ const { Content } = await render(post);
           {formatPostDate(post.data)}
         </time>
       </div>
-      <h1>{post.data.title}</h1>
+      <h1><span class="marker">{post.data.title}</span></h1>
       <div class="tag-row">
         {getDisplayTags(post.data).map((tag) => (
           <a class="pill neutral tag-chip" href={withBase(getDisplayTagPath(tag))}>{tag}</a>
@@ -38,27 +38,65 @@ const { Content } = await render(post);
       )}
     </header>
 
-    <section class="prose">
-      <Content />
-    </section>
+    <div class="article-body">
+      <section class="prose">
+        <Content />
+      </section>
+      {(post.data.period || post.data.role || post.data.outcome || post.data.stack.length > 0) && (
+        <dl class="memo-card">
+          {post.data.period && (<><dt>期間</dt><dd>{post.data.period}</dd></>)}
+          {post.data.role && (<><dt>担当</dt><dd>{post.data.role}</dd></>)}
+          {post.data.outcome && (<><dt>成果</dt><dd>{post.data.outcome}</dd></>)}
+          {post.data.stack.length > 0 && (<><dt>技術</dt><dd>{post.data.stack.join("、")}</dd></>)}
+        </dl>
+      )}
+    </div>
   </article>
 
   <style>
     .article-hero {
+      position: relative;
       gap: 14px;
-      padding: 18px 18px 16px;
+      padding: 36px 18px 18px;
       border: 1px solid var(--line);
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 251, 255, 0.88));
+      background: rgba(255, 255, 255, 0.94);
       box-shadow: var(--shadow);
     }
 
+    .article-hero::before {
+      content: "";
+      position: absolute;
+      top: 14px;
+      left: 18px;
+      width: 40px;
+      height: 12px;
+      background: var(--tape-writing-bg);
+      border: 1px solid var(--tape-writing-border);
+      transform: rotate(-4deg);
+    }
+
     .article-hero h1 {
-      max-width: 18ch;
-      font-size: clamp(1.8rem, 5vw, 3.6rem);
-      line-height: 1.05;
-      letter-spacing: -0.04em;
+      max-width: 28em;
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      line-height: 1.45;
       text-wrap: balance;
+    }
+
+    .article-hero h1 .marker {
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+    }
+
+    .article-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+      align-items: start;
+      gap: 32px;
+      padding-top: 8px;
+    }
+
+    .memo-card {
+      transform: rotate(0.6deg);
     }
 
     .hero-meta {
@@ -86,9 +124,13 @@ const { Content } = await render(post);
       margin-top: 4px;
     }
 
-    @media (max-width: 640px) {
-      .article-hero h1 {
-        font-size: clamp(1.6rem, 10vw, 2.4rem);
+    @media (max-width: 820px) {
+      .article-body {
+        grid-template-columns: 1fr;
+      }
+
+      .memo-card {
+        transform: none;
       }
     }
   </style>
