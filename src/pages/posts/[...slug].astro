@@ -39,7 +39,8 @@ const { Content } = await render(post);
     </header>
 
     <div class="article-body">
-      <section class="prose">
+      <section class="prose note-sheet">
+        <svg class="paper-clip" aria-hidden="true" width="22" height="54" viewBox="0 0 22 54"><path d="M15 16 V42 a5 5 0 0 1 -10 0 V9 a3.5 3.5 0 0 1 7 0 V38" /></svg>
         <Content />
       </section>
       {(post.data.period || post.data.role || post.data.outcome || post.data.stack.length > 0) && (
@@ -97,6 +98,75 @@ const { Content } = await render(post);
 
     .memo-card {
       transform: rotate(0.6deg);
+    }
+
+    .note-sheet {
+      --rule: 32px;
+      position: relative;
+      gap: 0;
+      max-width: none;
+      padding: var(--rule) 28px calc(var(--rule) * 1.5);
+      background-color: white;
+      background-image:
+        repeating-linear-gradient(180deg, transparent 0, transparent calc(var(--rule) - 1px), rgba(86, 116, 160, 0.22) calc(var(--rule) - 1px), rgba(86, 116, 160, 0.22) var(--rule));
+      border: 1px solid var(--line);
+      box-shadow: 2px 3px 0 rgba(31, 79, 160, 0.08), var(--shadow);
+      font-size: 1rem;
+      transform: rotate(-0.3deg);
+    }
+
+    .note-sheet :global(p),
+    .note-sheet :global(li),
+    .note-sheet :global(h2),
+    .note-sheet :global(h3),
+    .note-sheet :global(pre),
+    .note-sheet :global(code) {
+      line-height: var(--rule);
+    }
+
+    .note-sheet :global(p),
+    .note-sheet :global(ul),
+    .note-sheet :global(ol),
+    .note-sheet :global(pre) {
+      margin: 0;
+    }
+
+    .note-sheet :global(* + p),
+    .note-sheet :global(* + ul),
+    .note-sheet :global(* + ol),
+    .note-sheet :global(* + pre),
+    .note-sheet :global(* + h2),
+    .note-sheet :global(* + h3) {
+      margin-top: var(--rule);
+    }
+
+    .note-sheet > .paper-clip + :global(*) {
+      margin-top: 0;
+    }
+
+    .note-sheet :global(pre) {
+      white-space: pre-wrap;
+      background: none;
+    }
+
+    .note-sheet :global(code) {
+      font-size: 0.9em;
+      color: #1c3f80;
+    }
+
+    .note-sheet :global(a) {
+      text-decoration: none;
+      background: linear-gradient(transparent 62%, var(--marker) 62%);
+    }
+
+    .paper-clip {
+      position: absolute;
+      top: -18px;
+      right: 32px;
+      fill: none;
+      stroke: #7d8ca6;
+      stroke-width: 2.2;
+      stroke-linecap: round;
     }
 
     .hero-meta {
