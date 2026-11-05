@@ -21,6 +21,7 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
       <div class="hero-actions">
         <a class="button primary" href="#latest-posts">新着記事</a>
         <a class="button ghost" href="#works">実績一覧</a>
+        <a class="button ghost" href="#interviews">インタビュー</a>
         {profile.links.map((link) => (
           <a class="button ghost" href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
         ))}
@@ -122,6 +123,24 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
     </div>
   </section>
 
+  <section class="interview-stage note-box" id="interviews" aria-labelledby="interviews-title">
+    <span class="box-label">掲載記事</span>
+    <h2 class="section-title" id="interviews-title">
+      <span class="section-num">4</span>
+      <span class="section-name">インタビュー</span>
+    </h2>
+    <div class="works-grid writing-grid">
+      {profile.interviews.map((interview) => (
+        <a class="article-card" href={interview.href} target="_blank" rel="noreferrer">
+          <p class="eyebrow">{interview.publisher}</p>
+          <h3>{interview.title}</h3>
+          <p class="card-summary">{interview.summary}</p>
+          <span class="text-link">インタビューを読む（外部サイト）</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
   <style>
     .home-hero {
       display: flex;
@@ -151,7 +170,8 @@ const articlePosts = posts.filter((post) => articleLikeSlugs.has(post.slug)).sli
 
     .latest-strip,
     .works-stage,
-    .writing-stage {
+    .writing-stage,
+    .interview-stage {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
       gap: 22px;
